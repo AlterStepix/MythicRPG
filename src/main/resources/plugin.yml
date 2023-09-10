@@ -1,0 +1,6 @@
+name: MythicRPG
+version: '${project.version}'
+main: net.alterstepix.mythicrpg.MythicRPG
+api-version: 1.18
+authors: [ AlterStepix, Crutogurch ]
+description: todo
