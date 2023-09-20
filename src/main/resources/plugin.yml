@@ -4,3 +4,7 @@ main: net.alterstepix.mythicrpg.MythicRPG
 api-version: 1.18
 authors: [ AlterStepix, Crutogurch ]
 description: todo
+commands:
+  mythic-rpg:
+    description: TODO
+    usage: /<command> [option] [arguments...]

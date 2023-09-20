@@ -1,8 +1,11 @@
 package net.alterstepix.mythicrpg.util
 
+import net.alterstepix.mythicrpg.MythicRPG
+import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.persistence.PersistentDataType
 
 /**
  * Creates a new [ItemStack] with and applies [lambda] to its [ItemMeta].
@@ -37,3 +40,9 @@ fun ItemStack.withDisplayName(hex: String, displayName: String) = this.withDispl
 
 fun ItemStack.withUnbreakable(unbreakable: Boolean = true) = this.appliedToMeta { meta: ItemMeta -> meta.isUnbreakable = unbreakable }
 fun ItemStack.withFlags(vararg flags: ItemFlag) = this.appliedToMeta { meta: ItemMeta -> meta.addItemFlags(*flags) }
+fun ItemStack.withData(key: String, value: String) = this.appliedToMeta { meta: ItemMeta -> meta.persistentDataContainer[NamespacedKey(MythicRPG.getInstance(), key), PersistentDataType.STRING] = value }
+
+fun ItemStack.getData(key: String): String? {
+    val meta = this.itemMeta ?: return null
+    return meta.persistentDataContainer[NamespacedKey(MythicRPG.getInstance(), key), PersistentDataType.STRING]
+}
