@@ -6,12 +6,32 @@ import org.bukkit.entity.Player
 
 inline fun <reified T: Entity> searchEntities(location: Location, radius: Double) =
     (location.world?.entities ?: listOf())
-        .filter { entity -> entity.location.distanceSquared(location) <=  radius }
+        .filter { entity -> entity.location.distanceSquared(location) <= radius * radius }
+        .filterIsInstance<T>()
+
+inline fun <reified T: Entity> searchEntitiesCylinder(location: Location, radius: Double) =
+    (location.world?.entities ?: listOf())
+        .filter { entity ->
+            val eLoc = entity.location
+            eLoc.y = 0.0
+
+            val loc = location.clone()
+            loc.y = 0.0
+
+            eLoc.distanceSquared(loc) <= radius * radius
+        }
         .filterIsInstance<T>()
 
 inline fun <reified T: Entity> searchEntities(player: Player, radius: Double) =
     searchEntities<T>(player.location, radius)
         .filter { entity -> entity != player }
 
+inline fun <reified T: Entity> searchEntitiesCylinder(player: Player, radius: Double) =
+    searchEntitiesCylinder<T>(player.location, radius)
+        .filter { entity -> entity != player }
+
 inline fun <reified T: Entity> searchEntities(location: MLoc, radius: Double) =
     searchEntities<T>(location.location, radius)
+
+inline fun <reified T: Entity> searchEntitiesCylinder(location: MLoc, radius: Double) =
+    searchEntitiesCylinder<T>(location.location, radius)

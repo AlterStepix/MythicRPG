@@ -1,5 +1,6 @@
 package net.alterstepix.mythicrpg.system.item
 
+import net.alterstepix.mythicrpg.content.item.IdolsIncarnateItem
 import net.alterstepix.mythicrpg.content.item.LightningAxeItem
 import org.bukkit.inventory.ItemStack
 
@@ -8,6 +9,7 @@ object ItemManager {
 
     fun init() {
         register(LightningAxeItem())
+        register(IdolsIncarnateItem())
     }
 
     private fun register(item: MythicItem) {
@@ -17,4 +19,6 @@ object ItemManager {
     operator fun get(identifier: String): MythicItem? {
         return items[identifier]
     }
+
+    fun identifiers() = items.keys
 }

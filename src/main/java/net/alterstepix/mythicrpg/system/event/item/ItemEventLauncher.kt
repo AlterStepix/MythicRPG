@@ -28,6 +28,7 @@ class ItemEventLauncher: Listener {
     @EventHandler
     fun onEntityAttackEntity(event: EntityDamageByEntityEvent) {
         if(event.damager !is Player || event.entity !is LivingEntity || event.cause == EntityDamageEvent.DamageCause.CUSTOM) return
+
         val mEvent = MItemEvent.AttackLivingEntity(false, event.damager as Player, (event.damager as Player).inventory.itemInMainHand, event.entity as LivingEntity)
         EventManager.launch(mEvent)
         if(mEvent.isCancelled) {

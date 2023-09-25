@@ -2,10 +2,14 @@ package net.alterstepix.mythicrpg.util
 
 import net.alterstepix.mythicrpg.MythicRPG
 import org.bukkit.NamespacedKey
+import org.bukkit.attribute.Attribute
+import org.bukkit.attribute.AttributeModifier
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
+import java.util.*
 
 /**
  * Creates a new [ItemStack] with and applies [lambda] to its [ItemMeta].
@@ -38,6 +42,14 @@ fun ItemStack.withDisplayName(displayName: String) = this.appliedToMeta { meta: 
  */
 fun ItemStack.withDisplayName(hex: String, displayName: String) = this.withDisplayName("${hex(hex)}$displayName")
 
+fun ItemStack.withLore(vararg lore: String) = this.appliedToMeta { meta: ItemMeta ->
+    if(meta.lore == null) meta.lore = lore.toList()
+    else {
+        val itemLore = meta.lore
+        itemLore?.addAll(lore)
+        meta.lore = itemLore
+    }
+}
 fun ItemStack.withUnbreakable(unbreakable: Boolean = true) = this.appliedToMeta { meta: ItemMeta -> meta.isUnbreakable = unbreakable }
 fun ItemStack.withFlags(vararg flags: ItemFlag) = this.appliedToMeta { meta: ItemMeta -> meta.addItemFlags(*flags) }
 fun ItemStack.withData(key: String, value: String) = this.appliedToMeta { meta: ItemMeta -> meta.persistentDataContainer[NamespacedKey(MythicRPG.getInstance(), key), PersistentDataType.STRING] = value }
@@ -45,4 +57,8 @@ fun ItemStack.withData(key: String, value: String) = this.appliedToMeta { meta: 
 fun ItemStack.getData(key: String): String? {
     val meta = this.itemMeta ?: return null
     return meta.persistentDataContainer[NamespacedKey(MythicRPG.getInstance(), key), PersistentDataType.STRING]
+}
+
+fun ItemStack.withAttribute(attribute: Attribute, value: Double, slot: EquipmentSlot) = this.appliedToMeta { meta: ItemMeta ->
+    meta.addAttributeModifier(attribute, AttributeModifier(UUID.randomUUID(), "Attribute", value, AttributeModifier.Operation.ADD_NUMBER, slot))
 }

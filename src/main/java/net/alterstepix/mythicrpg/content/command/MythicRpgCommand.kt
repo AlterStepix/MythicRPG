@@ -38,6 +38,11 @@ class MythicRpgCommand: CommandExecutor, TabCompleter {
         if(args.size == 1) {
             return mutableListOf("item")
         }
+        if(args.size == 2) {
+            while (args.first() == "item") {
+                return ItemManager.identifiers().toMutableList()
+            }
+        }
         return mutableListOf()
     }
 }
