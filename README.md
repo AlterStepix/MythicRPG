@@ -13,7 +13,7 @@ Compatible with Spigot servers starting from version 1.18.
 
 ### Screenshots
 
-<img src="https://i9.ytimg.com/vi_webp/-l5SfjNRyUQ/mq2.webp?sqp=CNisx6gG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgWihQMA8=&rs=AOn4CLDjz0m7KvylYUz8WgZkFYZYWEWxKw" width="550" alt="Test Screenshot">
+<img src="test" width="550" alt="Test Screenshot">
 
 ## Plans
 
