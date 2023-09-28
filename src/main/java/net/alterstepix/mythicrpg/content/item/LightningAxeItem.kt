@@ -3,6 +3,7 @@ package net.alterstepix.mythicrpg.content.item
 import net.alterstepix.mythicrpg.system.config.ConfigValue
 import net.alterstepix.mythicrpg.system.event.item.MItemEvent
 import net.alterstepix.mythicrpg.system.item.MythicItem
+import net.alterstepix.mythicrpg.system.manager.MythicContent
 import net.alterstepix.mythicrpg.util.*
 import org.bukkit.Color
 import org.bukkit.Material
@@ -13,7 +14,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffectType
 
-class LightningAxeItem: MythicItem() {
+@MythicContent class LightningAxeItem: MythicItem() {
     init {
         this.registerItemAbility(cooldownMs = 12500L, autoCancel = true) { event: MItemEvent.RightClick, ctx: AbilityContext ->
             val entities = searchEntitiesCylinder<LivingEntity>(event.player, 4.5)

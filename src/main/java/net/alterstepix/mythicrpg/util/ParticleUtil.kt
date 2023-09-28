@@ -3,6 +3,7 @@ package net.alterstepix.mythicrpg.util
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.World
+import org.bukkit.entity.LivingEntity
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -41,7 +42,7 @@ class ParticleBuilder(private val particle: Particle) {
         return this
     }
 
-    fun setData(data: Any): ParticleBuilder {
+    fun setData(data: Any?): ParticleBuilder {
         this.data = data
         return this
     }
@@ -75,4 +76,12 @@ class ParticleBuilder(private val particle: Particle) {
     fun displayCircle(location: MLoc, quality: Int, radius: Double, transform: (MVec) -> MVec = { it }) {
         this.displayCircle(location, quality, this.count, radius, transform)
     }
+}
+
+fun particles(type: Particle, count: Int, offset: Double = 0.0, extra: Double = 0.0, data: Any? = null): ParticleBuilder {
+    return ParticleBuilder(type)
+        .setCount(count)
+        .setOffset(offset)
+        .setExtra(extra)
+        .setData(data)
 }

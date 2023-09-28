@@ -1,6 +1,8 @@
 package net.alterstepix.mythicrpg.content.command
 
-import net.alterstepix.mythicrpg.system.item.ItemManager
+import net.alterstepix.mythicrpg.system.manager.ItemManager
+import net.alterstepix.mythicrpg.system.manager.MobManager
+import net.alterstepix.mythicrpg.util.mLoc
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -16,10 +18,21 @@ class MythicRpgCommand: CommandExecutor, TabCompleter {
             "item" -> {
                 if(args.size != 2) {
                     sender.sendMessage("usage: /mythicrpg item [id]")
+                    return true
                 }
                 val identifier = args[1]
                 val mythicItem = ItemManager[identifier] ?: return true.also { sender.sendMessage("Unknown item: $identifier") }
                 sender.inventory.addItem(mythicItem.createItemStack())
+            }
+            "mob" -> {
+                if(args.size != 2) {
+                    sender.sendMessage("usage: /mythicrpg mob [id]")
+                    return true
+                }
+                val identifier = args[1]
+                val element = MobManager[identifier] ?: return true.also { sender.sendMessage("Unknown identifier: $identifier") }
+
+                element.create(sender.mLoc)
             }
             else -> {
                 sender.sendMessage("Invalid subcommand")
@@ -36,11 +49,12 @@ class MythicRpgCommand: CommandExecutor, TabCompleter {
         args: Array<out String>
     ): MutableList<String> {
         if(args.size == 1) {
-            return mutableListOf("item")
+            return mutableListOf("item", "mob")
         }
         if(args.size == 2) {
-            while (args.first() == "item") {
-                return ItemManager.identifiers().toMutableList()
+            when (args.first()) {
+                "item" -> return ItemManager.keys.toMutableList()
+                "mob" -> return MobManager.keys.toMutableList()
             }
         }
         return mutableListOf()

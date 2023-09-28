@@ -2,7 +2,7 @@ package net.alterstepix.mythicrpg
 
 import net.alterstepix.mythicrpg.content.command.MythicRpgCommand
 import net.alterstepix.mythicrpg.system.event.item.ItemEventLauncher
-import net.alterstepix.mythicrpg.system.item.ItemManager
+import net.alterstepix.mythicrpg.system.manager.initManagers
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.plugin.java.JavaPlugin
@@ -22,7 +22,7 @@ class MythicRPG : JavaPlugin() {
 
         Bukkit.getPluginManager().registerEvents(ItemEventLauncher(), this)
 
-        ItemManager.init()
+        initManagers()
 
         val command = MythicRpgCommand()
         Bukkit.getPluginCommand("mythic-rpg")?.setExecutor(command)

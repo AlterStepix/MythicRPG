@@ -3,13 +3,14 @@ package net.alterstepix.mythicrpg.system.item
 import net.alterstepix.mythicrpg.system.event.EventManager
 import net.alterstepix.mythicrpg.system.event.MCancellable
 import net.alterstepix.mythicrpg.system.event.item.MItemEvent
+import net.alterstepix.mythicrpg.system.manager.Identifiable
 import net.alterstepix.mythicrpg.util.*
 import org.bukkit.attribute.Attribute
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 
-abstract class MythicItem {
+abstract class MythicItem: Identifiable {
     private var colorScheme = Triple<String, String, String>("#ff0000", "#ffe600", "#24ff00")
     class AbilityContext() {
         class AbilityCancelledException constructor(val reason: String) : Throwable()
@@ -64,12 +65,12 @@ abstract class MythicItem {
             .withFlags(ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES)
             .withData("mythic-item", getIdentifier())
 
-    fun getIdentifier(): String {
+    override fun getIdentifier(): String {
         return this::class.simpleName ?: "Unknown"
     }
 
     protected fun ItemStack.withDamage(damage: Double) = this
-        .withAttribute(Attribute.GENERIC_ATTACK_DAMAGE, damage, EquipmentSlot.HAND)
+        .withAttribute(Attribute.GENERIC_ATTACK_DAMAGE, damage - 1.0, EquipmentSlot.HAND)
         .withLore("${hex(colorScheme.first)}Damage: ${hex(colorScheme.second)}♥${hex(colorScheme.third)}§l$damage")
 
     protected fun ItemStack.withAttackSpeed(attackSpeed: Double) = this
