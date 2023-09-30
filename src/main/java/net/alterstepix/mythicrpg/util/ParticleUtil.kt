@@ -78,6 +78,26 @@ class ParticleBuilder(private val particle: Particle) {
     fun displayCircle(location: MLoc, quality: Int, radius: Double, transform: (MVec) -> MVec = { it }) {
         this.displayCircle(location, quality, this.count, radius, transform)
     }
+
+    fun displaySphere(location: MLoc, sphereRadius: Double) {
+        var location = location
+        var i = 0.0
+        while (i <= Math.PI) {
+            val radius = sin(i)
+            val y = cos(i)
+            var a = 0.0
+            while (a < Math.PI * 2) {
+                val x = cos(a) * radius
+                val z = sin(a) * radius
+                location = location.add(x * sphereRadius, y * sphereRadius, z * sphereRadius)
+                display(location, 1)
+                location = location.add(-1 * x * sphereRadius, -1 * y * sphereRadius, -1 * z * sphereRadius)
+                a += Math.PI / 10
+            }
+            i += Math.PI / 10
+        }
+    }
+
 }
 
 fun particles(type: Particle, count: Int, offset: Double = 0.0, extra: Double = 0.0, data: Any? = null): ParticleBuilder {
