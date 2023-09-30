@@ -2,12 +2,41 @@ package net.alterstepix.mythicrpg.util
 
 import org.bukkit.entity.Player
 
-class Cooldown(private val cooldownMs: Long) {
+interface ICooldown {
+    fun isReady():  Boolean
+}
+
+class Cooldown(private val cooldownMs: Long): ICooldown {
     private var lastMs = 0L
 
-    fun isReady(): Boolean {
+    override fun isReady(): Boolean {
         if(System.currentTimeMillis() - lastMs >= cooldownMs) {
             lastMs = System.currentTimeMillis()
+            return true
+        }
+        return false
+    }
+
+    fun reset() {
+        this.lastMs = 0L
+    }
+
+    fun update() {
+        this.lastMs = System.currentTimeMillis()
+    }
+
+    val remainingTime: Long get() = -(System.currentTimeMillis() - lastMs - cooldownMs)
+    val progress: Double get() = 1.0 + (System.currentTimeMillis() - lastMs - cooldownMs).toDouble() / cooldownMs.toDouble()
+}
+
+class RandomCooldown(private val cooldownMsRange: LongRange): ICooldown {
+    private var lastMs = 0L
+    private var cooldownMs = cooldownMsRange.random()
+
+    override fun isReady(): Boolean {
+        if(System.currentTimeMillis() - lastMs >= cooldownMs) {
+            lastMs = System.currentTimeMillis()
+            cooldownMs = cooldownMsRange.random()
             return true
         }
         return false

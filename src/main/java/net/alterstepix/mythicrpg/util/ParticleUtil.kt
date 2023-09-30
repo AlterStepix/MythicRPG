@@ -1,7 +1,9 @@
 package net.alterstepix.mythicrpg.util
 
+import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Particle
+import org.bukkit.Particle.DustTransition
 import org.bukkit.World
 import org.bukkit.entity.LivingEntity
 import kotlin.math.PI
@@ -84,4 +86,12 @@ fun particles(type: Particle, count: Int, offset: Double = 0.0, extra: Double = 
         .setOffset(offset)
         .setExtra(extra)
         .setData(data)
+}
+
+fun particles(colorFrom: String, colorTo: String, count: Int, size: Float = 1.0f, offset: Double = 0.0, extra: Double = 0.0): ParticleBuilder {
+    return ParticleBuilder(Particle.DUST_COLOR_TRANSITION)
+        .setCount(count)
+        .setOffset(offset)
+        .setExtra(extra)
+        .setData(DustTransition(Color.fromRGB(colorFrom.trimStart('#').toInt(16)), Color.fromRGB(colorTo.trimStart('#').toInt(16)), size))
 }

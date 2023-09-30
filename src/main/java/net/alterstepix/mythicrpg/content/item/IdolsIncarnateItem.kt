@@ -24,10 +24,6 @@ import org.bukkit.potion.PotionEffectType
             PathTracer(20.0)
                 .withDensity(3.0)
                 .addIterationHandler { data ->
-                    if(!data.location.block.isPassable) {
-                        return@addIterationHandler false
-                    }
-
                     data.direction = data.direction.add(random(-0.1..0.1), random(-0.1..0.1), random(-0.1..0.1)).normalize()
                     ParticleBuilder(Particle.DUST_COLOR_TRANSITION)
                         .setData(DustTransition(Color.GRAY, Color.BLACK, 1.2f))

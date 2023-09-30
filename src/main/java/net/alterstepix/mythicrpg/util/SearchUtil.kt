@@ -9,6 +9,13 @@ inline fun <reified T: Entity> searchEntities(location: Location, radius: Double
         .filter { entity -> entity.location.distanceSquared(location) <= radius * radius }
         .filterIsInstance<T>()
 
+inline fun <reified T: Entity> checkEntities(location: Location) =
+    (location.world?.entities ?: listOf())
+        .filter { entity -> entity.boundingBox.contains(location.toVector()) }
+        .filterIsInstance<T>()
+
+inline fun <reified T: Entity> checkEntities(location: MLoc) = checkEntities<T>(location.location)
+
 inline fun <reified T: Entity> searchEntitiesCylinder(location: Location, radius: Double) =
     (location.world?.entities ?: listOf())
         .filter { entity ->

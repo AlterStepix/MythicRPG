@@ -1,41 +1,74 @@
 package net.alterstepix.mythicrpg.system.mob
 
 import net.alterstepix.mythicrpg.MythicRPG
+import net.alterstepix.mythicrpg.system.event.EventManager
+import net.alterstepix.mythicrpg.system.event.mob.MMobEvent
 import net.alterstepix.mythicrpg.system.manager.Identifiable
-import net.alterstepix.mythicrpg.util.EntityBuilder
-import net.alterstepix.mythicrpg.util.MLoc
-import net.alterstepix.mythicrpg.util.format
-import net.alterstepix.mythicrpg.util.hex
+import net.alterstepix.mythicrpg.util.*
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.scheduler.BukkitRunnable
 
-abstract class MythicMob(val type: MobType): Identifiable {
+abstract class MythicMob<E: LivingEntity>(private val type: MobType): Identifiable {
+    private val abilities = mutableListOf<() -> Ability<E>>()
+    protected val mobs = mutableListOf<E>()
+
     enum class MobType(val title: String) {
-        Mob("${hex("#59a343")}§lMOB"),
-        Elite("${hex("#bdb277")}§lELITE"),
-        Boss("${hex("#ea6363")}§lBOSS")
+        MOB("${hex("#59a343")}§lMOB"),
+        ELITE("${hex("#bdb277")}§lELITE"),
+        BOSS("${hex("#ea6363")}§lBOSS")
     }
 
-    abstract fun createMobBase(): EntityBuilder<out LivingEntity>
+    class Ability<E: LivingEntity>(val cooldown: RandomCooldown, val handler: (E) -> Unit)
 
-    class MythicMobInstance(private val mob: LivingEntity): BukkitRunnable() {
+    fun clearMobs() {
+        for(mob in mobs) {
+            mob.remove()
+        }
+
+        mobs.clear()
+    }
+
+    abstract fun createMobBase(): EntityBuilder<E>
+
+    protected inline fun <reified T: MMobEvent> registerMobEvent(crossinline handler: (T) -> Unit) {
+        EventManager.register(lambda = { event: T ->
+            if(mobs.contains(event.entity)) {
+                handler(event)
+            }
+        })
+    }
+
+    protected fun registerMobAbility(cooldownTicks: IntRange, handler: (E) -> Unit) {
+        this.abilities.add { Ability(RandomCooldown((cooldownTicks.first * 50L)..(cooldownTicks.last * 50L)), handler) }
+    }
+
+    class MythicMobInstance<E: LivingEntity>(private val mob: E, private val mythicMob: MythicMob<E>): BukkitRunnable() {
         private val displayName = mob.customName
+        private val abilities = mythicMob.abilities.map { supplier -> supplier() }
 
         override fun run() {
             if(!mob.isValid || mob.isDead) {
+                mythicMob.mobs.remove(mob)
                 cancel(); return
             }
             mob.customName = displayName + " ${hex("#a23434")}${mob.health.format(1)}♥"
+            for(ability in abilities) {
+                if(ability.cooldown.isReady()) {
+                    ability.handler(mob)
+                }
+            }
         }
     }
 
-    fun create(location: MLoc): LivingEntity {
+    fun create(location: MLoc): E {
         val entity = createMobBase()
+            .setData("mythic-mob", getIdentifier())
             .setCustomNameVisible()
             .spawn(location)
 
-        MythicMobInstance(entity).runTaskTimer(MythicRPG.getInstance(), 0L, 1L)
+        mobs.add(entity)
+        MythicMobInstance(entity, this).runTaskTimer(MythicRPG.getInstance(), 0L, 1L)
 
         return entity
     }

@@ -9,6 +9,8 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
+import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.math.sqrt
 
 data class MLoc(val world: World, val x: Double, val y: Double, val z: Double) {
@@ -57,10 +59,17 @@ data class MVec(val x: Double, val y: Double, val z: Double) {
     fun multiply(s: Double) = MVec(x * s, y * s, z * s)
 
     fun length() = sqrt(x * x + y * y + z * z)
+
     fun normalize(): MVec {
         val len = length()
-        return MVec(x / length(), y / length(), z / length())
+        return MVec(x / len, y / len, z /len)
     }
+
+    fun rotX(t: Double) = MVec(x, y * cos(t) - z * sin(t), y * sin(t) + z * cos(t))
+    fun rotY(t: Double) = MVec(x * cos(t) + z * sin(t), y, -x * sin(t) + z * cos(t))
+    fun rotZ(t: Double) = MVec(x * cos(t) - y * sin(t), x * sin(t) + y * cos(t), z)
+
+    fun cross(vec: MVec) = MVec(this.y * vec.z - this.z * vec.y, this.z * vec.x - this.x * vec.z, this.x * vec.y - this.y * vec.x)
 }
 
 val Entity.mLoc get() = MLoc(this.world, this.location.x, this.location.y, this.location.z)
@@ -76,7 +85,8 @@ class PathTracer(private val length: Double) {
         var direction: MVec
     )
 
-    var density: Double = 4.0
+    private var density: Double = 4.0
+    private var collideBlock: Boolean = true
     private val iterHandlers = mutableListOf<(Data) -> Boolean>()
     private val endHandlers = mutableListOf<(Data) -> Unit>()
 
@@ -100,6 +110,10 @@ class PathTracer(private val length: Double) {
         val iterations = density * length
 
         fun advance(i: Int): Boolean {
+            if(collideBlock && !data.location.block.isPassable) {
+                for(h in endHandlers) { h(data) }
+                return false
+            }
             for(ih in iterHandlers) { if(!ih(data)) { return false } }
             data.location = data.location.add(data.direction.mul(1.0 / density))
 

@@ -65,10 +65,6 @@ abstract class MythicItem: Identifiable {
             .withFlags(ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES)
             .withData("mythic-item", getIdentifier())
 
-    override fun getIdentifier(): String {
-        return this::class.simpleName ?: "Unknown"
-    }
-
     protected fun ItemStack.withDamage(damage: Double) = this
         .withAttribute(Attribute.GENERIC_ATTACK_DAMAGE, damage - 1.0, EquipmentSlot.HAND)
         .withLore("${hex(colorScheme.first)}Damage: ${hex(colorScheme.second)}♥${hex(colorScheme.third)}§l$damage")

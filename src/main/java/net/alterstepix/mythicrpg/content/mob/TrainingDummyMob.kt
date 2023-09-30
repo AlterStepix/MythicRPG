@@ -8,8 +8,8 @@ import net.alterstepix.mythicrpg.util.setHealth
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Pig
 
-@MythicContent class TrainingDummyMob: MythicMob(MobType.Boss) {
-    override fun createMobBase(): EntityBuilder<out LivingEntity> {
+@MythicContent class TrainingDummyMob: MythicMob<Pig>(MobType.BOSS) {
+    override fun createMobBase(): EntityBuilder<Pig> {
         return EntityBuilder(Pig::class.java)
             .setAI(false)
             .setHealth(1000.0)

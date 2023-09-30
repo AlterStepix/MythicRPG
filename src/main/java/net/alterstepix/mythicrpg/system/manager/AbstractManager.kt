@@ -22,11 +22,12 @@ abstract class AbstractManager<T: Identifiable>(private val contentClass: Class<
         return contentMap[key]
     }
 
-     val keys get() = contentMap.keys
+    val keys get() = contentMap.keys
+    val values get() = contentMap.values
 }
 
 object ItemManager: AbstractManager<MythicItem>(MythicItem::class.java)
-object MobManager: AbstractManager<MythicMob>(MythicMob::class.java)
+object MobManager: AbstractManager<MythicMob<*>>(MythicMob::class.java)
 
 fun initManagers() {
     ItemManager.init()
