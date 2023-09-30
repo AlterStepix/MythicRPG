@@ -12,24 +12,20 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 
-@MythicContent class AirBurnerItem : MythicItem() {
-
+@MythicContent class AirBurnerItem: MythicItem() {
     init {
-        registerItemAbility(cooldownMs = 13000L, autoCancel = true) { event : MItemEvent.RightClick, abilityContext ->
-            val entities = searchEntities<LivingEntity>(event.player, 10.0).toMutableList()
+        registerItemAbility(cooldownMs = 13000L, autoCancel = true) { event : MItemEvent.RightClick, _ ->
+            val entities = searchEntities<LivingEntity>(event.player, 10.0)
             if (entities.isEmpty()) {
-                entities+=event.player
-                burnEntity(event, entities)
+                burnEntity(mutableListOf(event.player))
                 return@registerItemAbility
             }
 
-            particles(type = Particle.SMOKE_LARGE, count = 100, extra = 0.1).setForce(true).displaySphere(event.player.centerMLoc, 5.0)
-
-            burnEntity(event, entities)
-
+            particles(Particle.SMOKE_LARGE, 200, extra = 0.1).setForce(true).displaySphere(event.player.centerMLoc, 5.0)
+            burnEntity(entities)
         }
-
     }
+
     override fun createItemStackBase(): ItemStack {
         setColorScheme("#F5AA47", "#0F72A8", "#47B7F5")
         return ItemStack(Material.FLINT_AND_STEEL)
@@ -44,30 +40,26 @@ import org.bukkit.potion.PotionEffect
             )
     }
 
-    private fun burnEntity(event: MItemEvent.RightClick, entities: List<LivingEntity>) {
-        val entities = entities.toMutableList()
-
-        // Visual fire block
+    private fun burnEntity(entities: List<LivingEntity>) {
         for (entity in entities) {
-            entity.setVisualFire(true)
-            particles(type =  Particle.LAVA, count = 15).display(entity.centerMLoc)
-        }
-        runLater(128) {
-            for (entity in entities) {
-                entity.setVisualFire(false)
+            entity.isVisualFire = true
+            particles(Particle.LAVA, 15).display(entity.centerMLoc)
+
+            runLater(128) {
+                entity.isVisualFire = false
             }
-        }
 
-        // Damage block
-        for (entity in entities) {
-            runParallelFor(16L, 8) { _, _ ->
-                particles(type =  Particle.SMOKE_LARGE, count = 8, extra = 0.4).display(entity.eyeMLoc)
-                particles(type =  Particle.ITEM_CRACK, count = 15, data =  ItemStack(Material.COOKED_PORKCHOP), extra = 0.3).display(entity.eyeMLoc)
+            runParallelFor(16L, 8) { breakLoop, _ ->
+                particles(Particle.SMOKE_LARGE, 8, extra = 0.4).display(entity.eyeMLoc)
+                particles(Particle.ITEM_CRACK, 15, data = ItemStack(Material.COOKED_PORKCHOP), extra = 0.3).display(entity.eyeMLoc)
                 entity.makeSound(Sound.BLOCK_FIRE_AMBIENT, 2.5f, 0.0f)
                 entity.noDamageTicks = 0
                 entity.damage(1.0)
+
+                if(entity.isDead) {
+                    breakLoop()
+                }
             }
         }
-
     }
 }

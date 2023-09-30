@@ -1,14 +1,12 @@
 package net.alterstepix.mythicrpg.util
 
 import org.bukkit.Color
-import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.Particle.DustTransition
-import org.bukkit.World
-import org.bukkit.entity.LivingEntity
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 class ParticleBuilder(private val particle: Particle) {
     var offsetX = 0.0
@@ -80,24 +78,24 @@ class ParticleBuilder(private val particle: Particle) {
     }
 
     fun displaySphere(location: MLoc, sphereRadius: Double) {
-        var location = location
+        var mLoc = location
+        val dCount = sqrt(count.toDouble()) * 0.840896
         var i = 0.0
         while (i <= Math.PI) {
             val radius = sin(i)
             val y = cos(i)
-            var a = 0.0
-            while (a < Math.PI * 2) {
-                val x = cos(a) * radius
-                val z = sin(a) * radius
-                location = location.add(x * sphereRadius, y * sphereRadius, z * sphereRadius)
-                display(location, 1)
-                location = location.add(-1 * x * sphereRadius, -1 * y * sphereRadius, -1 * z * sphereRadius)
-                a += Math.PI / 10
+            var p = 0.0
+            while (p < Math.PI * 2) {
+                val x = cos(p) * radius
+                val z = sin(p) * radius
+                mLoc = mLoc.add(x * sphereRadius, y * sphereRadius, z * sphereRadius)
+                display(mLoc, 1)
+                mLoc = mLoc.add(-x * sphereRadius, -y * sphereRadius, -z * sphereRadius)
+                p += Math.PI / dCount   // 1.4 sqt p
             }
-            i += Math.PI / 10
+            i += Math.PI / dCount       // 1 sqt p
         }
     }
-
 }
 
 fun particles(type: Particle, count: Int, offset: Double = 0.0, extra: Double = 0.0, data: Any? = null): ParticleBuilder {

@@ -13,7 +13,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
 
-@MythicContent class BerserkAxe: MythicItem() {
+@MythicContent class BerserkAxeItem: MythicItem() {
     init {
         registerItemEvent { event: MItemEvent.AttackLivingEntity ->
             event.target.pushFromWithY(event.player.centerMLoc, 0.7, 0.4)
