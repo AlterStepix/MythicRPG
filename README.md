@@ -3,7 +3,7 @@
 
 ## Information
 
-[Spigot Page (download)](https://www.spigotmc.org/resources/mythic-rpg.101348/)
+[Spigot Page OUTDATED (download)](https://www.spigotmc.org/resources/mythic-rpg.101348/)
 
 ### Description
 Mythic RPG is a Minecraft RPG plugin made by Stronsawt-MC.
@@ -20,7 +20,7 @@ Compatible with Spigot servers starting from version 1.18.
 - [ ] Add more items
   - [X] Lightning Axe
   - [X] Idols Incarnate
-  - [ ] Air Burner
+  - [X] Air Burner
 
 - [ ] Add more mobs
 - [ ] Add more armor
