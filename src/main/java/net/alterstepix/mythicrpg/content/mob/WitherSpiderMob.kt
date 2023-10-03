@@ -34,7 +34,7 @@ import org.bukkit.potion.PotionEffectType
 
     override fun createMobBase(): EntityBuilder<Spider> {
         return EntityBuilder(Spider::class.java)
-            .setDisplayName("#462352", "Infected Zombie")
+            .setDisplayName("#462352", "Wither Spider")
             .setHealth(12.0)
     }
 }

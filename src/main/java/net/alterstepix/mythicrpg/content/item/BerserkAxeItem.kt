@@ -1,5 +1,6 @@
 package net.alterstepix.mythicrpg.content.item
 
+import net.alterstepix.mythicrpg.system.ingredient.IngredientManager
 import net.alterstepix.mythicrpg.system.event.item.MItemEvent
 import net.alterstepix.mythicrpg.system.item.MythicItem
 import net.alterstepix.mythicrpg.system.manager.MythicContent
@@ -15,6 +16,16 @@ import org.bukkit.util.Vector
 
 @MythicContent class BerserkAxeItem: MythicItem() {
     init {
+        setRecipe(
+            " DD",
+            " SD",
+            " S ",
+            hashMapOf(
+                'D' to IngredientManager.compressedDeepslateShard.itemStack,
+                'S' to ItemStack(Material.STICK, 1),
+            )
+        )
+
         registerItemEvent { event: MItemEvent.AttackLivingEntity ->
             event.target.pushFromWithY(event.player.centerMLoc, 0.7, 0.4)
             event.player.world.playSound(event.player.location, Sound.ENTITY_ITEM_BREAK, 1.0f, 0.3f)

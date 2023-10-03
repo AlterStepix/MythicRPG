@@ -1,14 +1,22 @@
 package net.alterstepix.mythicrpg.system.item
 
+import net.alterstepix.mythicrpg.MythicRPG
 import net.alterstepix.mythicrpg.system.event.EventManager
 import net.alterstepix.mythicrpg.system.event.MCancellable
 import net.alterstepix.mythicrpg.system.event.item.MItemEvent
 import net.alterstepix.mythicrpg.system.manager.Identifiable
+import net.alterstepix.mythicrpg.system.recipe.RecipeManager
 import net.alterstepix.mythicrpg.util.*
+import org.bukkit.Bukkit
+import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.attribute.Attribute
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.RecipeChoice.ExactChoice
+import org.bukkit.inventory.RecipeChoice
+import org.bukkit.inventory.ShapedRecipe
 
 abstract class MythicItem: Identifiable {
     private var colorScheme = Triple<String, String, String>("#ff0000", "#ffe600", "#24ff00")
@@ -57,6 +65,24 @@ abstract class MythicItem: Identifiable {
 
     protected fun setColorScheme(a: String, b: String, c: String) {
         this.colorScheme = Triple(a, b, c)
+    }
+
+    protected fun setRecipe(rowA: String, rowB: String, rowC: String, ingredients: HashMap<Char, ItemStack>) {
+        val namespacedKey = NamespacedKey(MythicRPG.getInstance(), getIdentifier().lowercase() + "-recipe")
+
+        val recipe = ShapedRecipe(namespacedKey, this.createItemStack())
+        recipe.shape(
+            rowA,
+            rowB,
+            rowC,
+        )
+
+        for(ingredient in ingredients) {
+            recipe.setIngredient(ingredient.key, ExactChoice(ingredient.value))
+        }
+
+        Bukkit.addRecipe(recipe)
+        RecipeManager.addRecipe(namespacedKey, recipe)
     }
 
     fun createItemStack() =

@@ -1,6 +1,7 @@
 package net.alterstepix.mythicrpg.util
 
 import net.alterstepix.mythicrpg.MythicRPG
+import org.bukkit.Color
 import org.bukkit.NamespacedKey
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
@@ -8,6 +9,7 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.inventory.meta.LeatherArmorMeta
 import org.bukkit.persistence.PersistentDataType
 import java.util.*
 
@@ -61,4 +63,12 @@ fun ItemStack.getData(key: String): String? {
 
 fun ItemStack.withAttribute(attribute: Attribute, value: Double, slot: EquipmentSlot) = this.appliedToMeta { meta: ItemMeta ->
     meta.addAttributeModifier(attribute, AttributeModifier(UUID.randomUUID(), "Attribute", value, AttributeModifier.Operation.ADD_NUMBER, slot))
+}
+
+fun ItemStack.withLeatherColor(color: Color) = this.appliedToMeta { meta: LeatherArmorMeta ->
+    meta.setColor(color)
+}
+
+fun ItemStack.withLeatherColor(color: String) = this.appliedToMeta { meta: LeatherArmorMeta ->
+    meta.setColor(Color.fromRGB(color.trimStart('#').toInt(16)))
 }

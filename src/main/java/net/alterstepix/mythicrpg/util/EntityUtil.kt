@@ -55,12 +55,47 @@ fun <T: LivingEntity> EntityBuilder<T>.setHealth(health: Double): EntityBuilder<
     return this
 }
 
+fun <T: LivingEntity> EntityBuilder<T>.setSpeed(speed: Double): EntityBuilder<T> {
+    addModifier { entity ->
+        entity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)?.baseValue = speed
+    }
+
+    return this
+}
+
+fun <T: LivingEntity> EntityBuilder<T>.setKnockbackResistance(value: Double): EntityBuilder<T> {
+    addModifier { entity ->
+        entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE)?.baseValue = value
+    }
+
+    return this
+}
+
+fun <T: LivingEntity> EntityBuilder<T>.setArmor(value: Double): EntityBuilder<T> {
+    addModifier { entity ->
+        entity.getAttribute(Attribute.GENERIC_ARMOR)?.baseValue = value
+    }
+
+    return this
+}
+
 fun <T: LivingEntity> EntityBuilder<T>.setEquipment(helmet: Material = Material.AIR, chestplate: Material = Material.AIR, leggings: Material = Material.AIR, boots: Material = Material.AIR): EntityBuilder<T> {
     addModifier { entity ->
         if(helmet != Material.AIR) entity.equipment?.helmet = ItemStack(helmet).withUnbreakable()
         if(chestplate != Material.AIR) entity.equipment?.chestplate = ItemStack(helmet).withUnbreakable()
         if(leggings != Material.AIR) entity.equipment?.leggings = ItemStack(leggings).withUnbreakable()
         if(boots != Material.AIR) entity.equipment?.boots = ItemStack(boots).withUnbreakable()
+    }
+
+    return this
+}
+
+fun <T: LivingEntity> EntityBuilder<T>.setEquipment(helmet: ItemStack = ItemStack(Material.AIR), chestplate: ItemStack = ItemStack(Material.AIR), leggings: ItemStack = ItemStack(Material.AIR), boots: ItemStack = ItemStack(Material.AIR)): EntityBuilder<T> {
+    addModifier { entity ->
+        if(helmet.type != Material.AIR) entity.equipment?.helmet = helmet.withUnbreakable()
+        if(chestplate.type != Material.AIR) entity.equipment?.chestplate = chestplate.withUnbreakable()
+        if(leggings.type != Material.AIR) entity.equipment?.leggings = leggings.withUnbreakable()
+        if(boots.type != Material.AIR) entity.equipment?.boots = boots.withUnbreakable()
     }
 
     return this

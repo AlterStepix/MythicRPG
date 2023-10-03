@@ -28,6 +28,7 @@ class MobEventLauncher: Listener {
         }
 
         val mEvent = MMobEvent.Death(event.entity, event.drops, event.droppedExp)
+        EventManager.launch(mEvent)
         event.droppedExp = mEvent.exp
     }
 }

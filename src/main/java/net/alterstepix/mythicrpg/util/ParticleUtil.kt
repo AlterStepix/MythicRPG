@@ -91,9 +91,9 @@ class ParticleBuilder(private val particle: Particle) {
                 mLoc = mLoc.add(x * sphereRadius, y * sphereRadius, z * sphereRadius)
                 display(mLoc, 1)
                 mLoc = mLoc.add(-x * sphereRadius, -y * sphereRadius, -z * sphereRadius)
-                p += Math.PI / dCount   // 1.4 sqt p
+                p += Math.PI / dCount
             }
-            i += Math.PI / dCount       // 1 sqt p
+            i += Math.PI / dCount
         }
     }
 }

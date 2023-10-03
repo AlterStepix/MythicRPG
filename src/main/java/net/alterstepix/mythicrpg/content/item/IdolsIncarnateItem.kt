@@ -1,5 +1,6 @@
 package net.alterstepix.mythicrpg.content.item
 
+import net.alterstepix.mythicrpg.system.ingredient.IngredientManager
 import net.alterstepix.mythicrpg.system.event.item.MItemEvent
 import net.alterstepix.mythicrpg.system.item.MythicItem
 import net.alterstepix.mythicrpg.system.manager.MythicContent
@@ -20,6 +21,16 @@ import org.bukkit.potion.PotionEffectType
         PotionEffectType.WEAKNESS, PotionEffectType.HUNGER
     )
     init {
+        setRecipe(
+            " F ",
+            " F ",
+            " S ",
+            hashMapOf(
+                'F' to IngredientManager.heartOfInfection.itemStack,
+                'S' to ItemStack(Material.STICK, 1),
+            )
+        )
+
         registerItemAbility(7500, autoCancel = true) { event: MItemEvent.RightClick, _: AbilityContext ->
             PathTracer(20.0)
                 .withDensity(3.0)

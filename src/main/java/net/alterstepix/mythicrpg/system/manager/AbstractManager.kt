@@ -30,6 +30,6 @@ object ItemManager: AbstractManager<MythicItem>(MythicItem::class.java)
 object MobManager: AbstractManager<MythicMob<*>>(MythicMob::class.java)
 
 fun initManagers() {
-    ItemManager.init()
     MobManager.init()
+    ItemManager.init()
 }

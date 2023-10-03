@@ -1,5 +1,6 @@
 package net.alterstepix.mythicrpg.content.mob
 
+import net.alterstepix.mythicrpg.system.ingredient.IngredientManager
 import net.alterstepix.mythicrpg.system.event.mob.MMobEvent
 import net.alterstepix.mythicrpg.system.manager.MythicContent
 import net.alterstepix.mythicrpg.system.mob.MythicMob
@@ -7,11 +8,12 @@ import net.alterstepix.mythicrpg.util.*
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
-import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Zombie
 
 @MythicContent class InfectedZombieMob: MythicMob<Zombie>(MobType.MOB) {
     init {
+        registerDrops(IngredientManager.infectedFleshDrop, IngredientManager.heartOfInfection)
+
         registerMobEvent { event: MMobEvent.AttackEntity ->
             particles(Particle.HEART, 4, 0.3, 0.4).display(event.entity.eyeMLoc)
             event.entity.world.playSound(event.entity.location, Sound.ENTITY_WITCH_DRINK, 0.5f, 0.5f)

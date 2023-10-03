@@ -1,17 +1,28 @@
 package net.alterstepix.mythicrpg.system.mob
 
 import net.alterstepix.mythicrpg.MythicRPG
+import net.alterstepix.mythicrpg.system.ingredient.IngredientManager
 import net.alterstepix.mythicrpg.system.event.EventManager
 import net.alterstepix.mythicrpg.system.event.mob.MMobEvent
 import net.alterstepix.mythicrpg.system.manager.Identifiable
 import net.alterstepix.mythicrpg.util.*
+import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.scheduler.BukkitRunnable
 
 abstract class MythicMob<E: LivingEntity>(private val type: MobType): Identifiable {
     private val abilities = mutableListOf<() -> Ability<E>>()
+    private val drops = mutableListOf<IngredientManager.Ingredient>()
     protected val mobs = mutableListOf<E>()
+
+    init {
+        registerMobEvent<MMobEvent.Death> { event ->
+            for(drop in drops) {
+                event.drops.addAll(drop.drop())
+            }
+        }
+    }
 
     enum class MobType(val title: String) {
         MOB("${hex("#59a343")}§lMOB"),
@@ -43,6 +54,10 @@ abstract class MythicMob<E: LivingEntity>(private val type: MobType): Identifiab
         this.abilities.add { Ability(RandomCooldown((cooldownTicks.first * 50L)..(cooldownTicks.last * 50L)), handler) }
     }
 
+    protected fun registerDrops(vararg drops: IngredientManager.Ingredient) {
+        this.drops.addAll(drops)
+    }
+
     class MythicMobInstance<E: LivingEntity>(private val mob: E, private val mythicMob: MythicMob<E>): BukkitRunnable() {
         private val displayName = mob.customName
         private val abilities = mythicMob.abilities.map { supplier -> supplier() }
@@ -52,7 +67,7 @@ abstract class MythicMob<E: LivingEntity>(private val type: MobType): Identifiab
                 mythicMob.mobs.remove(mob)
                 cancel(); return
             }
-            mob.customName = displayName + " ${hex("#a23434")}${mob.health.format(1)}♥"
+            mob.customName = displayName + " ${hex("#a23434")}${mob.health.format(1)}♥ ${hex("#a6e0af")}${mob.getAttribute(Attribute.GENERIC_ARMOR)?.value?.format(1)}⚓"
             for(ability in abilities) {
                 if(ability.cooldown.isReady()) {
                     ability.handler(mob)
