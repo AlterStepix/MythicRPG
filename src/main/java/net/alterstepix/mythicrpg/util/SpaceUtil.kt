@@ -9,9 +9,7 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
+import kotlin.math.*
 
 data class MLoc(val world: World, val x: Double, val y: Double, val z: Double) {
     val location: Location get() = Location(world, x, y, z)
@@ -39,6 +37,8 @@ data class MLoc(val world: World, val x: Double, val y: Double, val z: Double) {
 
 data class MVec(val x: Double, val y: Double, val z: Double) {
     val vector: Vector get() = Vector(x, y, z)
+    val yaw = atan2(z, x) - PI / 2
+    val pitch = atan2(hypot(z, x), y) + PI
     fun toMLoc(world: World) = MLoc(world, x, y, z)
     fun toLocation(world: World) = Location(world, x, y, z)
 
@@ -70,6 +70,12 @@ data class MVec(val x: Double, val y: Double, val z: Double) {
     fun rotZ(t: Double) = MVec(x * cos(t) - y * sin(t), x * sin(t) + y * cos(t), z)
 
     fun cross(vec: MVec) = MVec(this.y * vec.z - this.z * vec.y, this.z * vec.x - this.x * vec.z, this.x * vec.y - this.y * vec.x)
+
+    fun transform(vec: MVec): MVec = this.rotX(vec.pitch).rotY(-vec.yaw)
+
+    override fun toString(): String {
+        return "MVec($x; $y; $z)"
+    }
 }
 
 val Entity.mLoc get() = MLoc(this.world, this.location.x, this.location.y, this.location.z)
@@ -82,7 +88,8 @@ val LivingEntity.eyeMDir get() = MVec(this.eyeLocation.direction.x, this.eyeLoca
 class PathTracer(private val length: Double) {
     data class Data(
         var location: MLoc,
-        var direction: MVec
+        var direction: MVec,
+        var iteration: Int
     )
 
     private var density: Double = 4.0
@@ -106,7 +113,7 @@ class PathTracer(private val length: Double) {
     }
 
     private fun trace(location: MLoc, direction: MVec, caller: (((Int) -> Boolean), Int) -> Unit) {
-        val data = Data(location.copy(), direction.normalize().copy())
+        val data = Data(location.copy(), direction.normalize().copy(), 0)
         val iterations = density * length
 
         fun advance(i: Int): Boolean {
@@ -116,6 +123,7 @@ class PathTracer(private val length: Double) {
             }
             for(ih in iterHandlers) { if(!ih(data)) { return false } }
             data.location = data.location.add(data.direction.mul(1.0 / density))
+            data.iteration = i
 
             if(i == iterations.toInt() - 1) {
                 for(h in endHandlers) { h(data) }

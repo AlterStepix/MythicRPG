@@ -1,8 +1,17 @@
 package net.alterstepix.mythicrpg.util
 
+import net.alterstepix.mythicrpg.MythicRPG
+import org.bukkit.Bukkit
 import org.bukkit.Color
+import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Particle.DustTransition
+import org.bukkit.Particle.entries
+import org.bukkit.entity.ArmorStand
+import org.bukkit.entity.Entity
+import org.bukkit.inventory.ItemStack
+import java.lang.Thread.sleep
+import java.util.concurrent.Callable
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -112,4 +121,72 @@ fun particles(colorFrom: String, colorTo: String, count: Int, size: Float = 1.0f
         .setOffset(offset)
         .setExtra(extra)
         .setData(DustTransition(Color.fromRGB(colorFrom.trimStart('#').toInt(16)), Color.fromRGB(colorTo.trimStart('#').toInt(16)), size))
+}
+
+fun simpleParticleMotion(v0: MVec, g: MVec): (Double) -> MVec = { t -> v0.add(g.mul(t)) }
+fun createParticleMotion(x: ClosedRange<Double>, y: ClosedRange<Double> = x, z: ClosedRange<Double> = x, g: Double = -9.8): () -> (Double) -> MVec = {
+    simpleParticleMotion(MVec(random(x), random(y), random(z)), MVec(0.0, g, 0.0))
+}
+
+class BlockParticle(val material: Material, val lifetime: Long, val motionModelSupplier: () -> (Double) -> MVec, val frameHandlers: List<(ArmorStand, deltaTime: Double) -> Boolean>) {
+    companion object {
+        private val entities = mutableListOf<ArmorStand>()
+
+        fun cleanup() {
+            for(entity in entities) {
+                entity.remove()
+            }
+        }
+    }
+
+    fun display(location: MLoc): ArmorStand {
+        val e = location.world.spawn(location.location.subtract(0.0, 0.9, 0.0), ArmorStand::class.java) { entity ->
+            entity.isMarker = true
+            entity.isInvisible = true
+            entity.setGravity(false)
+            entity.isSmall = true
+
+            entity.equipment?.helmet = ItemStack(material)
+
+            entity.addScoreboardTag(searchIgnoreTag)
+
+            entities.add(entity)
+        }
+
+        runLater(lifetime) {
+            e.remove()
+            entities.remove(e)
+        }
+
+        val model = motionModelSupplier()
+        object: Thread() {
+            override fun run() {
+                val ff = System.currentTimeMillis()
+                var dt = 0L
+                var lf = ff
+                while (e.isValid) {
+                    val cf = System.currentTimeMillis()
+                    dt = cf - lf
+                    lf = cf
+
+                    val s = (System.currentTimeMillis() - ff).toDouble() / 1000.0
+                    val deltaTime = dt.toDouble() / 1000.0
+                    val velocity = model(s).mul(deltaTime)
+
+                    Bukkit.getScheduler().callSyncMethod(MythicRPG.getInstance(), Callable {
+                        e.teleport(e.location.add(velocity.vector))
+
+                        for(handler in frameHandlers) {
+                            if(!handler(e, deltaTime)) {
+                                e.remove()
+                            }
+                        }
+                    })
+                    sleep(5L)
+                }
+            }
+        }.start()
+
+        return e
+    }
 }

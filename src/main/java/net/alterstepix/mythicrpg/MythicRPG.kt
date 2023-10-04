@@ -6,6 +6,7 @@ import net.alterstepix.mythicrpg.system.event.mob.MobEventLauncher
 import net.alterstepix.mythicrpg.system.manager.MobManager
 import net.alterstepix.mythicrpg.system.manager.initManagers
 import net.alterstepix.mythicrpg.system.recipe.RecipeManager
+import net.alterstepix.mythicrpg.util.BlockParticle
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.plugin.java.JavaPlugin
@@ -38,5 +39,7 @@ class MythicRPG : JavaPlugin() {
         for(mythicMob in MobManager.values) {
             mythicMob.clearMobs()
         }
+
+        BlockParticle.cleanup()
     }
 }

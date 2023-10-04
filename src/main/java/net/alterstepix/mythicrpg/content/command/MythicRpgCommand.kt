@@ -35,7 +35,7 @@ class MythicRpgCommand: CommandExecutor, TabCompleter {
                 element.create(sender.mLoc)
             }
             else -> {
-                sender.sendMessage("Invalid subcommand")
+                sender.sendMessage("usage: /mythicrpg <mob/item> [options...]")
             }
         }
 

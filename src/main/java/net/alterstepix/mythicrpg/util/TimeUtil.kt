@@ -1,7 +1,6 @@
 package net.alterstepix.mythicrpg.util
 
 import net.alterstepix.mythicrpg.MythicRPG
-import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitRunnable
 
 fun runLater(ticks: Long, lambda: () -> Unit) {
@@ -12,14 +11,14 @@ fun runLater(ticks: Long, lambda: () -> Unit) {
     }.runTaskLater(MythicRPG.getInstance(), ticks)
 }
 
-class ParallelForBreakException(): Exception()
+class ParallelLoopBreakException(): Exception()
 
 fun runParallelFor(delay: Long, iterations: Int, startDelay: Long = 0L, lambda: (breakLoop: () -> Nothing, i: Int) -> Unit) {
     object: BukkitRunnable() {
         var i = 0
 
-        private fun breakThrower(): Nothing {
-            throw ParallelForBreakException()
+        private fun breakLoop(): Nothing {
+            throw ParallelLoopBreakException()
         }
 
         override fun run() {
@@ -28,12 +27,33 @@ fun runParallelFor(delay: Long, iterations: Int, startDelay: Long = 0L, lambda: 
                 return
             }
             try {
-                lambda(::breakThrower, i)
-            } catch (_: ParallelForBreakException) {
+                lambda(::breakLoop, i)
+            } catch (_: ParallelLoopBreakException) {
                 cancel()
                 return
             }
             i++
+        }
+    }.runTaskTimer(MythicRPG.getInstance(), startDelay, delay)
+}
+
+fun runParallelWhile(delay: Long, condition: () -> Boolean, startDelay: Long = 0L, lambda: (breakLoop: () -> Nothing) -> Unit) {
+    object: BukkitRunnable() {
+        private fun breakLoop(): Nothing {
+            throw ParallelLoopBreakException()
+        }
+
+        override fun run() {
+            if(!condition()) {
+                cancel()
+                return
+            }
+            try {
+                lambda(::breakLoop)
+            } catch (_: ParallelLoopBreakException) {
+                cancel()
+                return
+            }
         }
     }.runTaskTimer(MythicRPG.getInstance(), startDelay, delay)
 }

@@ -35,3 +35,9 @@ class EffectBuilder(val type: PotionEffectType, var duration: Int = 20, var ampl
         entity.forEach(::apply)
     }
 }
+
+fun potionEffect(type: PotionEffectType, duration: Double, amplifier: Int = 1, visible: Boolean = false) =
+    EffectBuilder(type)
+        .withDuration(duration)
+        .withAmplifier(amplifier)
+        .withVisibility(visible)
