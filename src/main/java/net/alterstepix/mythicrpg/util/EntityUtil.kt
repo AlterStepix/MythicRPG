@@ -1,8 +1,6 @@
 package net.alterstepix.mythicrpg.util
 
 import net.alterstepix.mythicrpg.MythicRPG
-import net.alterstepix.mythicrpg.system.mob.MythicMob
-import org.bukkit.Bukkit
 import org.bukkit.FluidCollisionMode
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -104,6 +102,14 @@ fun <T: LivingEntity> EntityBuilder<T>.setEquipment(helmet: ItemStack = ItemStac
 fun <T: LivingEntity> EntityBuilder<T>.setMainhand(itemMaterial: Material): EntityBuilder<T> {
     addModifier { entity ->
         entity.equipment?.setItemInMainHand(ItemStack(itemMaterial).withUnbreakable())
+    }
+
+    return this
+}
+
+fun <T: LivingEntity> EntityBuilder<T>.setOffhand(itemMaterial: Material): EntityBuilder<T> {
+    addModifier { entity ->
+        entity.equipment?.setItemInOffHand(ItemStack(itemMaterial).withUnbreakable())
     }
 
     return this

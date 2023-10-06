@@ -9,6 +9,7 @@ import net.alterstepix.mythicrpg.util.*
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
+import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 
 abstract class MythicMob<E: LivingEntity>(private val type: MobType): Identifiable {
@@ -91,6 +92,20 @@ abstract class MythicMob<E: LivingEntity>(private val type: MobType): Identifiab
     protected fun <T: Entity> EntityBuilder<T>.setDisplayName(color: String, displayName: String): EntityBuilder<T> {
         addModifier { entity ->
             entity.customName = "${type.title} ${hex(color)}$displayName"
+        }
+        return this
+    }
+
+    protected fun <T: Entity> EntityBuilder<T>.addMobEffect(vararg type: PotionEffectType, amplifier: Int = 1): EntityBuilder<T> {
+        addModifier { entity ->
+            if (entity is LivingEntity)
+                type.forEach {
+                    EffectBuilder(it)
+                        .withDuration(1.0E308)
+                        .withVisibility(false)
+                        .withAmplifier(amplifier)
+                        .apply(entity)
+                }
         }
         return this
     }
