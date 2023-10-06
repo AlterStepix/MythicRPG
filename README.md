@@ -1,5 +1,7 @@
 # Mythic RPG
 
+![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/w/alterstepix/MythicRPG)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/AlterStepix/MythicRPG)
 
 ## Information
 
