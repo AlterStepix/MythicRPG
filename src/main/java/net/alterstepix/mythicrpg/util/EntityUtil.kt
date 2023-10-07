@@ -11,6 +11,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import org.bukkit.potion.PotionEffectType
 import java.util.function.Predicate
 import kotlin.math.min
 
@@ -118,6 +119,26 @@ fun <T: LivingEntity> EntityBuilder<T>.setOffhand(itemMaterial: Material): Entit
 fun <T: LivingEntity> EntityBuilder<T>.setAI(ai: Boolean): EntityBuilder<T> {
     addModifier { entity ->
         entity.setAI(ai)
+    }
+    return this
+}
+
+fun <T: LivingEntity> EntityBuilder<T>.addMobEffect(vararg effects: EffectBuilder): EntityBuilder<T> {
+    addModifier { entity ->
+        for(effect in effects) {
+            effect.apply(entity)
+        }
+    }
+    return this
+}
+
+fun <T: LivingEntity> EntityBuilder<T>.addMobPersistentEffect(potionEffectType: PotionEffectType, amplifier: Int = 1): EntityBuilder<T> {
+    addModifier { entity ->
+        EffectBuilder(potionEffectType)
+            .withDuration(1.0E308)
+            .withVisibility(false)
+            .withAmplifier(amplifier)
+            .apply(entity)
     }
     return this
 }

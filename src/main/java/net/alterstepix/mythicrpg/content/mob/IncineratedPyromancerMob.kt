@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffectType
 
 @MythicContent class IncineratedPyromancerMob : MythicMob<Skeleton>(MobType.MOB) {
-
     init {
         registerMobEvent { event: MMobEvent.AttackEntity ->
             event.target.isVisualFire = true
@@ -32,7 +31,7 @@ import org.bukkit.potion.PotionEffectType
             }
         }
 
-        registerMobAbility(300..320) {entity ->
+        registerMobAbility(300..320) { entity ->
             if (entity.target == null) return@registerMobAbility
 
             particles(Particle.FLAME, 600).setForce(true).displaySphere(entity.mLoc, 8.0)
@@ -73,6 +72,6 @@ import org.bukkit.potion.PotionEffectType
             )
             .setMainhand(Material.FLINT_AND_STEEL)
             .setOffhand(Material.COOKED_PORKCHOP)
-            .addMobEffect(PotionEffectType.FIRE_RESISTANCE)
+            .addMobPersistentEffect(PotionEffectType.FIRE_RESISTANCE)
     }
 }

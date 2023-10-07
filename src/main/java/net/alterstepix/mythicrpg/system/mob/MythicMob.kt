@@ -95,18 +95,4 @@ abstract class MythicMob<E: LivingEntity>(private val type: MobType): Identifiab
         }
         return this
     }
-
-    protected fun <T: Entity> EntityBuilder<T>.addMobEffect(vararg type: PotionEffectType, amplifier: Int = 1): EntityBuilder<T> {
-        addModifier { entity ->
-            if (entity is LivingEntity)
-                type.forEach {
-                    EffectBuilder(it)
-                        .withDuration(1.0E308)
-                        .withVisibility(false)
-                        .withAmplifier(amplifier)
-                        .apply(entity)
-                }
-        }
-        return this
-    }
 }
