@@ -88,13 +88,13 @@ class ParticleBuilder(private val particle: Particle) {
 
     fun displaySphere(location: MLoc, sphereRadius: Double) {
         var mLoc = location
-        val dCount = sqrt(count.toDouble()) * 0.840896
+        val dCount = sqrt(count.toDouble()) * 0.686588220416
         var i = 0.0
         while (i <= Math.PI) {
             val radius = sin(i)
             val y = cos(i)
             var p = 0.0
-            while (p < Math.PI * 2) {
+            while (p <= Math.PI * 2) {
                 val x = cos(p) * radius
                 val z = sin(p) * radius
                 mLoc = mLoc.add(x * sphereRadius, y * sphereRadius, z * sphereRadius)

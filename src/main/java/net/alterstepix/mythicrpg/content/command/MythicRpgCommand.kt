@@ -49,14 +49,22 @@ class MythicRpgCommand: CommandExecutor, TabCompleter {
         args: Array<out String>
     ): MutableList<String> {
         if(args.size == 1) {
-            return mutableListOf("item", "mob")
+            return matching(args[0], "item", "mob")
         }
         if(args.size == 2) {
             when (args.first()) {
-                "item" -> return ItemManager.keys.toMutableList()
-                "mob" -> return MobManager.keys.toMutableList()
+                "item" -> return ItemManager.keys.matching(args[1])
+                "mob" -> return MobManager.keys.matching(args[1])
             }
         }
         return mutableListOf()
+    }
+
+    private fun Collection<String>.matching(key: String): MutableList<String> {
+        return this.filter { entry -> entry.lowercase().contains(key.lowercase()) }.toMutableList()
+    }
+
+    private fun matching(key: String, vararg entries: String): MutableList<String> {
+        return entries.filter { entry -> entry.lowercase().contains(key.lowercase()) }.toMutableList()
     }
 }
