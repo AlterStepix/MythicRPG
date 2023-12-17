@@ -19,6 +19,10 @@ import kotlin.math.min
 open class EntityBuilder<T: Entity>(val entityClass: Class<out T>) {
     private val modifiers: MutableList<(T) -> Unit> = mutableListOf()
 
+    companion object {
+        inline operator fun <reified T: Entity> invoke() = EntityBuilder(T::class.java)
+    }
+
     fun addModifier(modifier: (T) -> Unit) {
         modifiers.add(modifier)
     }

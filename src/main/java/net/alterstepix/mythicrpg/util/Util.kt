@@ -8,3 +8,5 @@ where T: Number,
 {
     return range.start.toDouble() + (Math.random() * (range.endInclusive.toDouble() - range.start.toDouble()))
 }
+
+val random: Double get() = Math.random()
