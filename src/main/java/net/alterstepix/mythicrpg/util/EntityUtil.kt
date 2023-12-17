@@ -9,6 +9,7 @@ import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffectType
@@ -80,10 +81,10 @@ fun <T: LivingEntity> EntityBuilder<T>.setArmor(value: Double): EntityBuilder<T>
 
 fun <T: LivingEntity> EntityBuilder<T>.setEquipment(helmet: Material = Material.AIR, chestplate: Material = Material.AIR, leggings: Material = Material.AIR, boots: Material = Material.AIR): EntityBuilder<T> {
     addModifier { entity ->
-        if(helmet != Material.AIR) entity.equipment?.helmet = ItemStack(helmet).withUnbreakable()
-        if(chestplate != Material.AIR) entity.equipment?.chestplate = ItemStack(helmet).withUnbreakable()
-        if(leggings != Material.AIR) entity.equipment?.leggings = ItemStack(leggings).withUnbreakable()
-        if(boots != Material.AIR) entity.equipment?.boots = ItemStack(boots).withUnbreakable()
+        if(helmet != Material.AIR) entity.equipment?.helmet = ItemStack(helmet).withUnbreakable().withAttribute(Attribute.GENERIC_ARMOR, 0.0, EquipmentSlot.HEAD)
+        if(chestplate != Material.AIR) entity.equipment?.chestplate = ItemStack(helmet).withUnbreakable().withAttribute(Attribute.GENERIC_ARMOR, 0.0, EquipmentSlot.CHEST)
+        if(leggings != Material.AIR) entity.equipment?.leggings = ItemStack(leggings).withUnbreakable().withAttribute(Attribute.GENERIC_ARMOR, 0.0, EquipmentSlot.LEGS)
+        if(boots != Material.AIR) entity.equipment?.boots = ItemStack(boots).withUnbreakable().withAttribute(Attribute.GENERIC_ARMOR, 0.0, EquipmentSlot.FEET)
     }
 
     return this
@@ -91,10 +92,10 @@ fun <T: LivingEntity> EntityBuilder<T>.setEquipment(helmet: Material = Material.
 
 fun <T: LivingEntity> EntityBuilder<T>.setEquipment(helmet: ItemStack = ItemStack(Material.AIR), chestplate: ItemStack = ItemStack(Material.AIR), leggings: ItemStack = ItemStack(Material.AIR), boots: ItemStack = ItemStack(Material.AIR)): EntityBuilder<T> {
     addModifier { entity ->
-        if(helmet.type != Material.AIR) entity.equipment?.helmet = helmet.withUnbreakable()
-        if(chestplate.type != Material.AIR) entity.equipment?.chestplate = chestplate.withUnbreakable()
-        if(leggings.type != Material.AIR) entity.equipment?.leggings = leggings.withUnbreakable()
-        if(boots.type != Material.AIR) entity.equipment?.boots = boots.withUnbreakable()
+        if(helmet.type != Material.AIR) entity.equipment?.helmet = helmet.withUnbreakable().withAttribute(Attribute.GENERIC_ARMOR, 0.0, EquipmentSlot.HEAD)
+        if(chestplate.type != Material.AIR) entity.equipment?.chestplate = chestplate.withUnbreakable().withAttribute(Attribute.GENERIC_ARMOR, 0.0, EquipmentSlot.CHEST)
+        if(leggings.type != Material.AIR) entity.equipment?.leggings = leggings.withUnbreakable().withAttribute(Attribute.GENERIC_ARMOR, 0.0, EquipmentSlot.LEGS)
+        if(boots.type != Material.AIR) entity.equipment?.boots = boots.withUnbreakable().withAttribute(Attribute.GENERIC_ARMOR, 0.0, EquipmentSlot.FEET)
     }
 
     return this
@@ -123,7 +124,7 @@ fun <T: LivingEntity> EntityBuilder<T>.setAI(ai: Boolean): EntityBuilder<T> {
     return this
 }
 
-fun <T: LivingEntity> EntityBuilder<T>.addMobEffect(vararg effects: EffectBuilder): EntityBuilder<T> {
+fun <T: LivingEntity> EntityBuilder<T>.addPotionEffect(vararg effects: EffectBuilder): EntityBuilder<T> {
     addModifier { entity ->
         for(effect in effects) {
             effect.apply(entity)
@@ -132,7 +133,7 @@ fun <T: LivingEntity> EntityBuilder<T>.addMobEffect(vararg effects: EffectBuilde
     return this
 }
 
-fun <T: LivingEntity> EntityBuilder<T>.addMobPersistentEffect(potionEffectType: PotionEffectType, amplifier: Int = 1): EntityBuilder<T> {
+fun <T: LivingEntity> EntityBuilder<T>.addPersistentPotionEffect(potionEffectType: PotionEffectType, amplifier: Int = 1): EntityBuilder<T> {
     addModifier { entity ->
         EffectBuilder(potionEffectType)
             .withDuration(1.0E308)

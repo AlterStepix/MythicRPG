@@ -75,6 +75,6 @@ import org.bukkit.potion.PotionEffectType
             )
             .setMainhand(Material.FLINT_AND_STEEL)
             .setOffhand(Material.COOKED_PORKCHOP)
-            .addMobPersistentEffect(PotionEffectType.FIRE_RESISTANCE)
+            .addPersistentPotionEffect(PotionEffectType.FIRE_RESISTANCE)
     }
 }

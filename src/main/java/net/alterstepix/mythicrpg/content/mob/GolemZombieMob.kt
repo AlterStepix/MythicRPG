@@ -53,6 +53,7 @@ import org.bukkit.util.Vector
             .setHealth(30.0)
             .setSpeed(0.2)
             .setKnockbackResistance(0.5)
+            .setArmor(10.0)
             .setEquipment(
                 helmet = ItemStack(Material.COBBLESTONE),
                 chestplate = ItemStack(Material.LEATHER_CHESTPLATE).withLeatherColor("#4e4355")
