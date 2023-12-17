@@ -35,9 +35,12 @@ import org.bukkit.potion.PotionEffectType
             if (entity.target == null) return@registerMobAbility
 
             particles(Particle.FLAME, 600).setForce(true).displaySphere(entity.mLoc, 8.0)
+            particles(Particle.LAVA, 200).setForce(true).displaySphere(entity.mLoc, 8.0)
+
             potionEffect(PotionEffectType.SLOW, 3.0,10 , visible = false).apply(entity)
 
             runLater(40) {
+                particles(Particle.SMOKE_LARGE, 200, extra = 0.1).setForce(true).displaySphere(entity.centerMLoc, 5.0)
                 for (target in searchEntities<Player>(entity.mLoc, 8.0).filter { e -> e != entity }){
                     target.isVisualFire = true
                     particles(Particle.LAVA, 15).display(target.centerMLoc)
