@@ -66,7 +66,7 @@ import org.bukkit.potion.PotionEffectType
     override fun createMobBase(): EntityBuilder<Skeleton> {
         return EntityBuilder(Skeleton::class.java)
             .setDisplayName("#998350","Incinerated Pyromancer")
-            .setHealth(30.0)
+            .setHealth(25.0)
             .setSpeed(0.36)
             .setEquipment(
                 helmet = ItemStack(Material.LEATHER_HELMET).withLeatherColor("#CCA852"),
