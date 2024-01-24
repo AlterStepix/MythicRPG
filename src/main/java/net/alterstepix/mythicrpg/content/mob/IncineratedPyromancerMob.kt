@@ -54,7 +54,8 @@ import org.bukkit.potion.PotionEffectType
                         target.noDamageTicks = 0
                         target.damage(1.0)
 
-                        if (target.isDead) {
+                        if (target.isDead || target.health<=0.0 || (target is Player && target.ticksLived <= 60)) {
+                            target.isVisualFire = false
                             breakLoop()
                         }
                     }

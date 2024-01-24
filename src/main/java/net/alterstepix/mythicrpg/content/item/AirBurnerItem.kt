@@ -8,6 +8,7 @@ import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 @MythicContent class AirBurnerItem: MythicItem() {
@@ -79,7 +80,8 @@ import org.bukkit.inventory.ItemStack
                 entity.noDamageTicks = 0
                 entity.damage(damage)
 
-                if(entity.isDead) {
+                if(entity.isDead || entity.health<=0.0 || (entity is Player && entity.ticksLived <= 60)) {
+                    entity.isVisualFire = false
                     breakLoop()
                 }
             }
